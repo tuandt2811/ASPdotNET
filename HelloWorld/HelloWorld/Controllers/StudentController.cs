@@ -8,7 +8,7 @@ namespace HelloWorld.Controllers
 {
     public class StudentController : Controller
     {
-        private IList<Student> studentList = new List<Student>{
+        static IList<Student> studentList = new List<Student>{
                                     new Student() { StudentId = 1, StudentName = "John", Age = 18 } ,
                                     new Student() { StudentId = 2, StudentName = "Steve",  Age = 21 } ,
                                     new Student() { StudentId = 3, StudentName = "Bill",  Age = 25 } ,
@@ -17,7 +17,7 @@ namespace HelloWorld.Controllers
                                     new Student() { StudentId = 6, StudentName = "Chris" , Age = 17 } ,
                                     new Student() { StudentId = 7, StudentName = "Rob" , Age = 19 }
                                 };
-        private int index;
+        static int index;
         // GET: Student
 
         public ActionResult Index()
@@ -35,11 +35,22 @@ namespace HelloWorld.Controllers
         }
 
         [HttpPost]
-        public ContentResult Edit(Student std)
+        public ActionResult Edit(Student std)
         {
-            /* localStd.StudentName = std.StudentName; */
+            var student = studentList.Where(s => s.StudentId == index).FirstOrDefault();
+            student.Age = std.Age;
+            student.StudentName = std.StudentName;
             /* localStd.Age = std.Age; */
-            return Content("Index" + index);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public ActionResult Delete(int id)
+        {
+            var student = studentList.Where(s => s.StudentId == id).FirstOrDefault();
+            studentList.Remove(student);
+
+            return RedirectToAction("Index");
         }
 
         public ContentResult OutofAction()
